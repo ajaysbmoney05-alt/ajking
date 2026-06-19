@@ -381,10 +381,10 @@ try {
 // =========================================================
 
 function findRetry(selector) {
-    let obj = selector.findOne(2000);
+    let obj = selector.findOne(1500);
     if (!obj) {
         log("Retrying search...");
-        obj = selector.findOne(8000);
+        obj = selector.findOne(2000);
     }
     return obj;
 }
