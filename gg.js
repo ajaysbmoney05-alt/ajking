@@ -5,10 +5,10 @@ auto.waitFor();
 // ==========================================
 const OP_PATH = "/storage/emulated/0/ajking/op.json";
 const RB_PATH = "/storage/emulated/0/ajking/rb.json";
-const NEXT_SCRIPT_PATH = "/storage/emulated/0/ajking/taska.js";
+const NEXT_SCRIPT_PATH = "/storage/emulated/0/ajking/tasksa.js";
 const DEFAULT_TIMESTAMP = "2026-06-05 15:51:42";
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDkHyfT4gjbMDVJCQ1p33Rxw3i9lmcTnnsWTmA-tGkUCROle9kMFW2JZ4MWYmZgCt1jQ/exec";
-const NEXT_SCRIPT_URL = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/taska.js";
+const NEXT_SCRIPT_URL = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/tasksa.js";
 
 // ==========================================
 // HELPER FUNCTIONS
