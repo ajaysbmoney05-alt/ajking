@@ -1,4 +1,4 @@
-Auto.waitFor();
+auto.waitFor();
 
 var target = images.read("/sdcard/ajking/2.jpg");
 
