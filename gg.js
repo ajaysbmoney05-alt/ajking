@@ -44,6 +44,7 @@ sleep(1000);
 app.launchPackage("com.machiav3lli.backup");
 sleep(7000);
 swipe(device.width / 2, 500, device.width / 2, 1800, 300);
+sleep(2000);
 let ff = findRetry(text("Firefox"));
 if (ff) {
     clickCenter(ff);
