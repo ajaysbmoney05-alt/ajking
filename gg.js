@@ -176,7 +176,46 @@ if (bestRestoreBtn) {
     exit();
 }
 
+app.launchPackage("org.mozilla.firefox");
+shell("am force-stop com.machiav3lli.backup", true);
+sleep(5000);
+// =====================
+// ADDRESS BAR FIX (RETRY + FORCE TAP)
+// =====================
 
+var x = 419;
+var y = 172;
+
+// multiple attempts (UI lag fix)
+for (var i = 0; i < 3; i++) {
+    click(x, y);
+    sleep(400);
+}
+
+sleep(500);
+
+// force focus check
+click(x, y);
+sleep(500);
+// set URL
+setText("https://joshjobs.joshtalks.com/transcription?job_id=757");
+sleep(500);
+// ENTER
+shell("input keyevent 66", true);
+sleep(6000);
+var show = textContains("Show").findOne(500) || 
+           textContains("SHOW").findOne(100) || 
+           descContains("Show").findOne(500) ||
+           descContains("SHOW").findOne(100);
+            
+if (show) {
+    var b = show.bounds();
+    // Ensure bounds are valid before clicking
+    if (b.centerX() > 0 && b.centerY() > 0) {
+        click(b.centerX(), b.centerY());
+        log("Show clicked! Assessment complete.");
+    }
+}
 // ==========================================
 // 5. UPLOAD & NEXT SCRIPT
 // ==========================================
