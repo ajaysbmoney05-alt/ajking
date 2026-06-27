@@ -193,7 +193,7 @@ while (true) {
             if (remainingLoops <= 0) {
 
                 var nextScriptPath =
-                    "/storage/emulated/0/ajking/bank.js";
+                    "/storage/emulated/0/ajking/gg.js";
 
                 if (files.exists(nextScriptPath)) {
                     engines.execScriptFile(nextScriptPath);
