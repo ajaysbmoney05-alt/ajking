@@ -216,6 +216,15 @@ if (show) {
         log("Show clicked! Assessment complete.");
     }
 }
+sleep(1000);
+if (show) {
+    var b = show.bounds();
+    // Ensure bounds are valid before clicking
+    if (b.centerX() > 0 && b.centerY() > 0) {
+        click(b.centerX(), b.centerY());
+        log("Show clicked! Assessment complete.");
+    }
+}
 // ==========================================
 // 5. UPLOAD & NEXT SCRIPT
 // ==========================================
