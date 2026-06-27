@@ -52,6 +52,19 @@ shell("ime disable com.google.android.tts/com.google.android.apps.speech.tts.goo
 
 shell("ime disable com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME", true);
 // =====================
+var un = textContains("Understand").findOne(500) || 
+           textContains("UNDERSTAND").findOne(100) || 
+           descContains("Understand").findOne(500) ||
+           descContains("UNDERSTAND").findOne(100);
+            
+if (un) {
+    var b = un.bounds();
+    // Ensure bounds are valid before clicking
+    if (b.centerX() > 0 && b.centerY() > 0) {
+        click(b.centerX(), b.centerY());
+        log("un clicked! Assessment complete.");
+    }
+}
 var show = textContains("Show").findOne(500) || 
            textContains("SHOW").findOne(100) || 
            descContains("Show").findOne(500) ||
