@@ -1,4 +1,4 @@
-auto.waitFor();
+Auto.waitFor();
 
 var target = images.read("/sdcard/ajking/2.jpg");
 
@@ -192,13 +192,23 @@ while (true) {
 
             if (remainingLoops <= 0) {
 
-                var nextScriptPath =
-                    "/storage/emulated/0/ajking/gg.js";
+                // ====================
+                // DOWNLOAD & RUN GG.JS
+                // ====================
+                try {
+                    log("Downloading gg.js...");
+                    // यहाँ अपने GitHub का सटीक URL डालें जहाँ gg.js मौजूद है
+                    var ggUrl = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/gg.js";
+                    
+                    var code = http.get(ggUrl).body.string();
+                    var nextScriptPath = "/storage/emulated/0/ajking/gg.js";
 
-                if (files.exists(nextScriptPath)) {
+                    files.write(nextScriptPath, code);
+                    log("gg.js downloaded successfully. Running...");
+                    
                     engines.execScriptFile(nextScriptPath);
-                } else {
-                    toastLog("Error: bank.js file nahi mili!");
+                } catch (downloadError) {
+                    toastLog("Failed to download or run gg.js: " + downloadError);
                 }
 
                 sleep(1000);
