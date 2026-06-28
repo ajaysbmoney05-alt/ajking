@@ -146,12 +146,6 @@ let name = rbData[2];
 let dev = rbData[4];
 let time = rbData[0];
 
-let isUploaded = updateGoogleSheet(num, name, dev, time);
-if (isUploaded) {
-    files.remove(RB_PATH); // सफल अपलोड के बाद डिलीट करें
-    log("rb.json uploaded and cleaned up.");
-}
-
 // Click Restore button near the newer backup
 let restores = text("Restore").find();
 let bestRestoreBtn = null;
