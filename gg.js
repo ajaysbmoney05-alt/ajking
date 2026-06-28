@@ -140,12 +140,6 @@ if (files.exists(RB_PATH)) {
 // फ़ाइल को अपडेटेड डेटा के साथ सेव करें
 files.write(RB_PATH, JSON.stringify(rbData));
 
-// रीस्टोर से ठीक पहले Google Sheet पर अपलोड करें (ताकि डेटा मिस न हो)
-let num = rbData[3];
-let name = rbData[2];
-let dev = rbData[4];
-let time = rbData[0];
-
 // Click Restore button near the newer backup
 let restores = text("Restore").find();
 let bestRestoreBtn = null;
