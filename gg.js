@@ -66,7 +66,7 @@ log("Looking for: " + currentTimestamp);
 let targetFound = false;
 let currentBackupObj = null;
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 30; i++) {
     currentBackupObj = text(currentTimestamp).findOnce();
     
     if (currentBackupObj) {
