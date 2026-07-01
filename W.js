@@ -1,44 +1,50 @@
 auto.waitFor();
 
-var MAIN_SCRIPT = "/sdcard/ajking/tasksa.js";   // <-- apne main script ka path
-
-toast("Watchdog Started");
+var MAIN = "/sdcard/ajking/tasksa.js";
+var STOP = "/sdcard/ajking/watcher.stop";
 
 while (true) {
     try {
+
+        // Main ne bola stop ho jao
+        if (files.exists(STOP)) {
+            files.remove(STOP);
+            log("Stop signal received.");
+            exit();
+        }
 
         var running = false;
         var list = engines.all();
 
         for (var i = 0; i < list.length; i++) {
 
-            var engine = list[i];
-
             try {
-                var src = engine.getSource();
+                var src = list[i].getSource();
 
-                if (src && src.toString() == MAIN_SCRIPT) {
+                if (src && src.toString() == MAIN) {
                     running = true;
                     break;
                 }
+
             } catch (e) {}
         }
 
+        // Main crash ho gaya
         if (!running) {
 
-            log("Main script not running. Restarting...");
+            log("Main crashed. Restarting...");
 
-            if (files.exists(MAIN_SCRIPT)) {
-                engines.execScriptFile(MAIN_SCRIPT);
-                sleep(3000);
-            } else {
-                log("Main script not found: " + MAIN_SCRIPT);
+            if (files.exists(MAIN)) {
+                engines.execScriptFile(MAIN);
             }
+
+            // Restart ke baad watcher khud band
+            exit();
         }
 
     } catch (e) {
-        log("Watchdog Error: " + e);
+        log("Watcher Error: " + e);
     }
 
-    sleep(5000); // har 5 sec check
+    sleep(3000);
 }
