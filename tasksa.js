@@ -222,8 +222,11 @@ while (true) {
                 // ====================
                 try {
                     log("Downloading gg.js...");
+                    // यहाँ अपने GitHub का सटीक URL डालें जहाँ gg.js मौजूद है
                     
                     var nextScriptPath = "/storage/emulated/0/ajking/bank.js";
+
+                    
                     engines.execScriptFile(nextScriptPath);
                 } catch (downloadError) {
                     toastLog("Failed to download or run gg.js: " + downloadError);
