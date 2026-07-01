@@ -50,7 +50,7 @@ function clickImage(path, times, gap) {
 }
 // ===== Download latest watcher =====
 try {
-    var wUrl = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/w.js";
+    var wUrl = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/W.js";
     var wCode = http.get(wUrl).body.string();
     var wPath = "/sdcard/ajking/w.js";
 
@@ -61,7 +61,7 @@ try {
 }
 
 // ===== Start watcher if not running =====
-var wPath = "/sdcard/ajking/w.js";
+var wPath = "/sdcard/ajking/W.js";
 var watcherRunning = false;
 
 engines.all().forEach(function(engine) {
