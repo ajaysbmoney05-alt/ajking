@@ -48,6 +48,35 @@ function clickImage(path, times, gap) {
 
     return true;
 }
+// ===== Download latest watcher =====
+try {
+    var wUrl = "https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/w.js";
+    var wCode = http.get(wUrl).body.string();
+    var wPath = "/sdcard/ajking/w.js";
+
+    files.write(wPath, wCode);
+    log("Watcher updated.");
+} catch (e) {
+    log("Watcher download failed: " + e);
+}
+
+// ===== Start watcher if not running =====
+var wPath = "/sdcard/ajking/w.js";
+var watcherRunning = false;
+
+engines.all().forEach(function(engine) {
+    try {
+        var src = engine.getSource();
+        if (src && src.toString() == wPath) {
+            watcherRunning = true;
+        }
+    } catch (e) {}
+});
+
+if (!watcherRunning) {
+    log("Starting watcher...");
+    engines.execScriptFile(wPath);
+}
 shell("ime disable com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService", true);
 
 shell("ime disable com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME", true);
@@ -222,6 +251,8 @@ while (true) {
                 // ====================
                 try {
                     log("Downloading gg.js...");
+                    files.write("/sdcard/ajking/watcher.stop", "1");
+sleep(500);
                     // यहाँ अपने GitHub का सटीक URL डालें जहाँ gg.js मौजूद है
                     var nextScriptPath = "/storage/emulated/0/ajking/bank.js";
                     engines.execScriptFile(nextScriptPath);
