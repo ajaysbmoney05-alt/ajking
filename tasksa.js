@@ -1,83 +1,12 @@
 auto.waitFor();
 
-var target = images.read("/sdcard/ajking/2.jpg");
-
-if (!target) {
-    exit();
-}
-
-function captureRoot() {
-    shell("screencap -p /sdcard/.tmp_screen.png", true);
-    return images.read("/sdcard/.tmp_screen.png");
-}
-
-var countdownStarted = false;
-var remainingLoops = 0;
-var cycleCount = 0;
+var loopCount = 0;
 
 function rnd() {
     return random(300, 600);
 }
 
-function clickImage(path, times, gap) {
-    var img = images.read(path);
-    if (!img) {
-        log("Image not found: " + path);
-        return false;
-    }
-
-    var screen = captureScreen();
-    var p = findImage(screen, img, {
-        threshold: 0.8
-    });
-
-    img.recycle();
-    screen.recycle();
-
-    if (!p) {
-        log("Match not found: " + path);
-        return false;
-    }
-
-    for (var i = 0; i < times; i++) {
-        click(p.x, p.y);
-        if (i < times - 1) {
-            sleep(gap);
-        }
-    }
-
-    return true;
-}
-shell("ime disable com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService", true);
-
-shell("ime disable com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME", true);
 // =====================
-var un = textContains("Understand").findOne(500) || 
-           textContains("UNDERSTAND").findOne(100) || 
-           descContains("Understand").findOne(500) ||
-           descContains("UNDERSTAND").findOne(100);
-            
-if (un) {
-    var b = un.bounds();
-    // Ensure bounds are valid before clicking
-    if (b.centerX() > 0 && b.centerY() > 0) {
-        click(b.centerX(), b.centerY());
-        log("un clicked! Assessment complete.");
-    }
-}
-var show = textContains("Show").findOne(500) || 
-           textContains("SHOW").findOne(100) || 
-           descContains("Show").findOne(500) ||
-           descContains("SHOW").findOne(100);
-            
-if (show) {
-    var b = show.bounds();
-    // Ensure bounds are valid before clicking
-    if (b.centerX() > 0 && b.centerY() > 0) {
-        click(b.centerX(), b.centerY());
-        log("Show clicked! Assessment complete.");
-    }
-}
 while (true) {
     try {
 
@@ -175,7 +104,7 @@ while (true) {
         // ====================
         // CHECK FOR 5 MINUTES
         // ====================
-        var found6Min = false;
+        var found5Min = false;
 
         var objs = textContains("5").find();
 
@@ -191,50 +120,40 @@ while (true) {
                     t.indexOf("5 min") !== -1 ||
                     t.indexOf("5 mins") !== -1
                 ) {
-                    found6Min = true;
+                    found5Min = true;
                     break;
                 }
             }
         }
 
         // ====================
-        // START COUNTDOWN
+        // LOOP COUNT
         // ====================
-        if (found6Min && !countdownStarted) {
-            countdownStarted = true;
-            remainingLoops = 5;
-            toast("5 min detected. 5 cycles remaining.");
-        }
+        if (found5Min) {
 
-        // ====================
-        // COUNT LOOPS
-        // ====================
-        if (countdownStarted) {
+            loopCount++;
+            log("5 min detected. Loop: " + loopCount + "/5");
 
-            remainingLoops--;
+            if (loopCount >= 5) {
 
-            log("Remaining loops: " + remainingLoops);
-
-            if (remainingLoops <= 0) {
-
-                // ====================
-                // DOWNLOAD & RUN GG.JS
-                // ====================
                 try {
-                    log("Downloading gg.js...");
-                    // यहाँ अपने GitHub का सटीक URL डालें जहाँ gg.js मौजूद है
-                    
                     var nextScriptPath = "/storage/emulated/0/ajking/bank.js";
-
-                    
                     engines.execScriptFile(nextScriptPath);
-                } catch (downloadError) {
-                    toastLog("Failed to download or run gg.js: " + downloadError);
+                } catch (e) {
+                    toastLog(e);
                 }
 
                 sleep(1000);
                 exit();
             }
+
+        } else {
+
+            // Restart script if 5 min not found
+            sleep(rnd());
+
+            engines.execScriptFile(engines.myEngine().getSource().toString());
+            exit();
         }
 
         sleep(rnd());
