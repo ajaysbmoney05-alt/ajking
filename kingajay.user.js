@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pro Transcription Automation (Stability Patch v14)
 // @namespace    https://github.com/ajaysbmoney05-alt
-// @version      16.3
+// @version      17.0
 // @match        *://*/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
@@ -25,7 +25,7 @@
                         "Never add words. " +
                         "Do not explain. " +
                         "Output only corrected text.\n\n",
-        PASTE_WAIT: 21000,
+        PASTE_WAIT: 20000,
         AI_TIMEOUT: 20000,
         LOG_LIMIT: 10,
         JITTER_MIN: 1000,
@@ -350,7 +350,13 @@
     // Main work cycle
     async function processTask() {
         if (STATE.processing) { await sleep(100); return; }
-
+        // --- NEW: Work Report Button Finder ---
+            const reportBtn = document.querySelector('button.WorkReport-module__x6OV4a__work_report_btn');
+            if (reportBtn && (reportBtn.offsetWidth > 0 || reportBtn.offsetHeight > 0)) {
+                log("Work Report button found, clicking...");
+                forceClick(reportBtn);
+                await sleep(1000); // Click ke baad thoda ruk jao
+            }
         const textarea = document.querySelector('textarea:not([disabled])');
         if (!textarea) {
             STATE.status = "🟡 WAITING";
@@ -484,18 +490,26 @@
         sendToSheet(instanceID, currentStep, currentQuality, currentEarnings, currentCountdown);
     }, 2000);
 
-    // --- MAIN EXECUTION LOOP ---
+    // --- UPDATED MAIN EXECUTION LOOP ---
     let loopCount = 0;
     while (true) {
         try {
             loopCount++;
-            if (loopCount % 20 === 0) { // Log every 20 loops (approx 10s) to avoid spam
-                console.log(`%c[LOOP] Cycle ${loopCount} | Status: ${STATE.status} | Step: ${STATE.currentStep} | Processing: ${STATE.processing}`, 'color: #0984e3; font-weight: bold;');
+        
+            // 20 loops ke baad reload
+            if (loopCount > 20) {
+                log("Limit reached (20 loops), reloading page...", "Reload");
+                window.location.reload();
+                break; // Loop ruk jayega reload ke baad
             }
+
+            if (loopCount % 5 === 0) { 
+                console.log(`%c[LOOP] Cycle ${loopCount} | Status: ${STATE.status}`, 'color: #0984e3; font-weight: bold;');
+            }
+
             await processTask();
         } catch (e) {
             log(`Err: ${e.message}`, "CRASH");
-            console.error(`%c[CRASH] ${e.message}`, 'color: #d63031; font-weight: bold;');
             STATE.processing = false;
         }
         await sleep(500);
