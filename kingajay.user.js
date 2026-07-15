@@ -4,8 +4,8 @@
 // @version      15.0
 // @match        *://*/*
 // @grant        none
-// @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.js
-// @updateURL    https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.js
+// @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
+// @updateURL    https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
 // ==/UserScript==
 
 (async () => {
