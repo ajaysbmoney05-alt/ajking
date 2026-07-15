@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pro Transcription Automation (Stability Patch v14)
 // @namespace    https://github.com/ajaysbmoney05-alt
-// @version      17.0
+// @version      17.1
 // @match        *://*/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
@@ -350,13 +350,19 @@
     // Main work cycle
     async function processTask() {
         if (STATE.processing) { await sleep(100); return; }
-        // --- NEW: Work Report Button Finder ---
-            const reportBtn = document.querySelector('button.WorkReport-module__x6OV4a__work_report_btn');
-            if (reportBtn && (reportBtn.offsetWidth > 0 || reportBtn.offsetHeight > 0)) {
-                log("Work Report button found, clicking...");
+        // --- NEW: Work Report Button Finder (Only if text is 'Show') ---
+        const reportBtn = document.querySelector('button.WorkReport-module__x6OV4a__work_report_btn');
+    
+        // Check agar button exist karta hai, visible hai, aur uska text exact 'Show' hai
+        if (reportBtn && (reportBtn.offsetWidth > 0 || reportBtn.offsetHeight > 0)) {
+            // Text node ko check karne ke liye button ke innerText ya child nodes check karo
+            // Is case mein 'Show' text button ke andar hai
+            if (reportBtn.textContent.trim().startsWith("Show")) {
+                log("Work Report 'Show' button found, clicking...");
                 forceClick(reportBtn);
                 await sleep(1000); // Click ke baad thoda ruk jao
             }
+        }
         const textarea = document.querySelector('textarea:not([disabled])');
         if (!textarea) {
             STATE.status = "🟡 WAITING";
