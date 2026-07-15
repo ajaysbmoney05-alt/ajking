@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pro Transcription Automation (Stability Patch v14)
 // @namespace    https://github.com/ajaysbmoney05-alt
-// @version      16.0
+// @version      16.3
 // @match        *://*/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
@@ -25,7 +25,7 @@
                         "Never add words. " +
                         "Do not explain. " +
                         "Output only corrected text.\n\n",
-        PASTE_WAIT: 20000,
+        PASTE_WAIT: 21000,
         AI_TIMEOUT: 20000,
         LOG_LIMIT: 10,
         JITTER_MIN: 1000,
