@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pro Transcription Automation (Stability Patch v14)
 // @namespace    https://github.com/ajaysbmoney05-alt
-// @version      19
+// @version      19.1
 // @match        *://*/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/kingajay.user.js
