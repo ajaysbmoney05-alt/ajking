@@ -131,11 +131,15 @@
 
     // Helper: Initialize and get instance ID (stored in window.name)
     function initializeInstanceID() {
-        if (!window.name) {
-            const randomID = 'P' + Math.floor(100 + Math.random() * 900);
-            window.name = randomID;
+        // Pehle localStorage check karega, agar nahi mili toh random generate karega
+        let id = localStorage.getItem('bot_instance_id');
+        
+        if (!id) {
+            id = 'P' + Math.floor(100 + Math.random() * 900);
+            localStorage.setItem('bot_instance_id', id);
         }
-        return window.name;
+        
+        return id;
     }
 
     // Helper: Send data to Google Sheet (using Image to avoid CORS issues)
