@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DP
 // @namespace    https://github.com/ajaysbmoney05-alt
-// @version      17.1
+// @version      19.1
 // @match        *://*/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/ajaysbmoney05-alt/ajking/main/DP.USER.JS
@@ -32,7 +32,7 @@
         JITTER_MAX: 3000,
         COOLDOWN_FAIL_LIMIT: 3,
         COOLDOWN_TIME: 30000,
-        SHEET_URL: "https://script.google.com/macros/s/AKfycbweIV2ym6-WPEDdNQ0cd7ikRuh_hhrggpydE2Luyza9r5DM8gM8dkoZiPFjHdZRfXbemQ/exec"
+        SHEET_URL: "https://script.google.com/macros/s/AKfycby59yad9faY1EAcB2aoWsJi33wCv-saZ_9ffaVh2OT5xmvpdAXpeRLMOvZrfITTGCAu/exec"
     };
 
     const STATE = {
@@ -79,7 +79,14 @@
         const qualityEl = document.querySelector('.ChunkTranscription-module__00EzxW__okay_btn');
         if (qualityEl) {
             const text = qualityEl.textContent.trim();
-            if (text === 'Okay' || text === 'Poor') {
+            if (text === 'Okay' || text === 'Poor Quality') {
+                return text;
+            }
+        }
+        const qualityElp = document.querySelector('.ChunkTranscription-module__00EzxW__under_review_btn');
+        if (qualityElp) {
+            const text = qualityElp.textContent.trim();
+            if (text === 'Okay' || text === 'Poor Quality') {
                 return text;
             }
         }
@@ -96,34 +103,43 @@
         return "N/A";
     }
 
-    // Helper: Get dynamic wait time based on audio timestamps
+   // Helper: Get dynamic wait time based on audio timestamps
     function getDynamicWaitTime() {
         const spans = Array.from(document.querySelectorAll('span'));
-        // Filter spans that look like timestamps (e.g., 0:00.0 or 1:23.4)
+        // Filter spans that look like timestamps
         const timeSpans = spans.filter(s => /^\d+:\d+(\.\d+)?$/.test(s.textContent.trim()));
 
+        let waitSeconds = 18; // Default fallback
+
         if (timeSpans.length >= 2) {
-            // The second timestamp is the end time
             const timeStr = timeSpans[1].textContent.trim();
             const parts = timeStr.split(':');
             const minutes = parseInt(parts[0], 10);
             const seconds = parseFloat(parts[1]);
             const totalSeconds = (minutes * 60) + seconds;
-
-            // Wait time = duration * 2, minimum 15 seconds
-            const waitSeconds = Math.max(18, totalSeconds * 2);
-            return Math.ceil(waitSeconds); // return as integer seconds
+            waitSeconds = Math.max(18, totalSeconds * 2);
         }
-        return 18; // fallback to 15 seconds if timestamps not found
+
+        // --- NEW: Poor Quality check ---
+        if (getCurrentQuality() === 'Poor Quality') {
+            waitSeconds = waitSeconds * 2;
+            log(`Poor Quality detected! Wait time increased to ${waitSeconds}s`);
+        }
+
+        return Math.ceil(waitSeconds); // return as integer seconds
     }
 
     // Helper: Initialize and get instance ID (stored in window.name)
     function initializeInstanceID() {
-        if (!window.name) {
-            const randomID = 'P' + Math.floor(100 + Math.random() * 900);
-            window.name = randomID;
+        // Pehle localStorage check karega, agar nahi mili toh random generate karega
+        let id = localStorage.getItem('bot_instance_id');
+        
+        if (!id) {
+            id = 'P' + Math.floor(100 + Math.random() * 900);
+            localStorage.setItem('bot_instance_id', id);
         }
-        return window.name;
+        
+        return id;
     }
 
     // Helper: Send data to Google Sheet (using Image to avoid CORS issues)
@@ -352,7 +368,7 @@
         if (STATE.processing) { await sleep(100); return; }
         // --- NEW: Work Report Button Finder (Only if text is 'Show') ---
         const reportBtn = document.querySelector('button.WorkReport-module__x6OV4a__work_report_btn');
-    
+
         // Check agar button exist karta hai, visible hai, aur uska text exact 'Show' hai
         if (reportBtn && (reportBtn.offsetWidth > 0 || reportBtn.offsetHeight > 0)) {
             // Text node ko check karne ke liye button ke innerText ya child nodes check karo
@@ -501,7 +517,7 @@
     while (true) {
         try {
             loopCount++;
-        
+
             // 20 loops ke baad reload
             if (loopCount > 20) {
                 log("Limit reached (20 loops), reloading page...", "Reload");
@@ -509,7 +525,7 @@
                 break; // Loop ruk jayega reload ke baad
             }
 
-            if (loopCount % 5 === 0) { 
+            if (loopCount % 5 === 0) {
                 console.log(`%c[LOOP] Cycle ${loopCount} | Status: ${STATE.status}`, 'color: #0984e3; font-weight: bold;');
             }
 
