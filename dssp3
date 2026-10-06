@@ -1,0 +1,206 @@
+LINUX PRACTICAL – SIMPLE STEPS
+
+========================================
+PART 1 – C PROGRAM
+========================================
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+struct Node* createNode(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+int height(struct Node* root) {
+    if (root == NULL)
+        return 0;
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+}
+
+int isBalanced(struct Node* root) {
+    if (root == NULL)
+        return 1;
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    if (abs(leftHeight - rightHeight) <= 1 &&
+        isBalanced(root->left) &&
+        isBalanced(root->right))
+        return 1;
+
+    return 0;
+}
+
+int main() {
+    struct Node* root = createNode(10);
+
+    root->left = createNode(5);
+    root->right = createNode(20);
+    root->left->left = createNode(3);
+    root->left->right = createNode(7);
+    root->right->right = createNode(30);
+
+    printf("Height of the tree: %d\n", height(root));
+
+    if (isBalanced(root))
+        printf("The tree is balanced.\n");
+    else
+        printf("The tree is not balanced.\n");
+
+    return 0;
+}
+
+
+========================================
+PART 2 – POSTGRESQL
+========================================
+
+1. sudo postgres psql
+
+2. DATABASE practical;
+
+3. \c practical
+  Table dekhne ke liye:
+  \dt
+
+
+----------------------------------------
+CREATE TABLES
+----------------------------------------
+
+5. Student table:
+
+CREATE TABLE Student (
+ s_no INTEGER PRIMARY KEY,
+ s_name CHAR(20) NOT NULL,
+ address CHAR(25),
+ class CHAR(10)
+);
+
+
+6. Teacher table:
+
+CREATE TABLE Teacher (
+ t_no INTEGER PRIMARY KEY,
+ t_name CHAR(10) NOT NULL,
+ qualification CHAR(10),
+ experience INTEGER
+);
+
+
+7. Student_Teacher table:
+
+CREATE TABLE Student_Teacher (
+ s_no INTEGER,
+ t_no INTEGER,
+ subject CHAR(20),
+ marks_scored INTEGER CHECK (marks_scored > 0),
+ PRIMARY KEY (s_no, t_no, subject),
+ FOREIGN KEY (s_no) REFERENCES Student(s_no),
+ FOREIGN KEY (t_no) REFERENCES Teacher(t_no)
+);
+
+
+----------------------------------------
+INSERT DATA
+----------------------------------------
+
+8. Student data:
+
+INSERT INTO Student VALUES
+(1, 'Ajay', 'Nashik', 'TYBCA');
+
+
+9. Teacher data:
+
+INSERT INTO Teacher VALUES
+(101, 'Rahul', 'MCA', 5);
+
+
+10. Relationship data:
+
+INSERT INTO Student_Teacher
+VALUES (1, 101, 'RDBMS', 85);
+
+
+----------------------------------------
+QUESTION 1 – CURSOR
+----------------------------------------
+
+11. Procedure paste karo:
+
+CREATE OR REPLACE PROCEDURE show_rdbms_teacher(s_no_input INTEGER)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+ rec RECORD;
+ cur CURSOR FOR
+ SELECT s.s_name, t.t_name
+ FROM Student s
+ JOIN Student_Teacher st ON s.s_no = st.s_no
+ JOIN Teacher t ON st.t_no = t.t_no
+ WHERE s.s_no = s_no_input
+ AND st.subject = 'RDBMS';
+BEGIN
+ OPEN cur;
+ LOOP
+  FETCH cur INTO rec;
+  EXIT WHEN NOT FOUND;
+  RAISE NOTICE 'Student: %, Teacher: %',
+  rec.s_name, rec.t_name;
+ END LOOP;
+ CLOSE cur;
+END;
+$$;
+
+
+12. Run:
+
+CALL show_rdbms_teacher(1);
+
+Output:
+NOTICE: Student: Ajay, Teacher: Rahul
+
+
+========================================
+QUESTION 2 – MINIMUM / MAXIMUM
+========================================
+
+13. Procedure paste karo:
+
+CREATE OR REPLACE PROCEDURE min_max_numbers(
+ num1 NUMERIC,
+ num2 NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+ IF num1 > num2 THEN
+  RAISE NOTICE 'Maximum: %, Minimum: %', num1, num2;
+ ELSE
+  RAISE NOTICE 'Maximum: %, Minimum: %', num2, num1;
+ END IF;
+END;
+$$;
+
+
+14. Run:
+
+CALL min_max_numbers(10, 20);
+
+Output:
+NOTICE: Maximum: 20, Minimum: 10
